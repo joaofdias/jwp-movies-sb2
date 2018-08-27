@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+<h1>Movie Catalog</h1>
+
+<form>
+	<input type="text" id="title"><br>
+	<input type="date" id="releaseDate"><br>
+	<input type="url" id="poster"><br>
+	<input type="number"><br>
+	<select id="category">
+		<option value="1">movie</option>
+	</select><br>
+	<input type="radio" id="won"><br>
+	<button id="cadastrar">cadastrar</button>
+</form>
+
+<table>
+	<thead>
+		<tr>
+			<th>title</th>
+			<th>released date</th>
+		</tr>
+	</thead>
+	<tbody id="catalog">
+	</body>
+</table>
+
+<script lang="javascript">
+
+var LOCAL_STORAGE_KEY = "catalog";
+
+var loadTable = function() {
+	var divCatalog = document.getElementById("catalog");
+	divCatalog.innerHTML = "";
+	var catalog = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+	for (var i=0; i<catalog.length; i++){
+		divCatalog.innerHTML += addRowToTable(catalog[i]);
+	}
+}
+
+var saveMovie = function(title, releaseDate) {
+	var movie = {title: title, releaseDate: releaseDate};
+	var catalog = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+	catalog.push(movie);
+	localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(catalog));
+	loadTable();
+}
+
+var addRowToTable = (movie) => {
+	var row = "";
+	row += "<tr>";
+	row += "<td>"+movie.title+"</td>";
+	row += "<td>"+movie.releaseDate+"</td>";
+	row += "</tr>";
+	return row;
+}
+
+var onClickBtnSave = (e) => {
+	e.preventDefault();
+	saveMovie(document.getElementById("title").value, document.getElementById("releaseDate").value)
+}
+
+function init() {
+	var movie1 = {title: "LOTR - The Felowship of the Ring", releaseDate: "01/01/2001"};
+	var movie2 = {title: "LOTR - Two Towers", releaseDate: "01/01/2005"};
+	var movie3 = {title: "LOTR - Return of the King", releaseDate: "01/01/2007"};
+	var catalog = [movie1, movie2, movie3];
+	localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(catalog));
+	loadTable();
+	
+	document.getElementById("cadastrar").onclick = onClickBtnSave;
+}
+
+window.onload = init
+
+</script>
+
+</html>
